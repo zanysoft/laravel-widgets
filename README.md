@@ -1,5 +1,5 @@
-[![Latest Stable Version]](https://packagist.org/packages/zanysoft/laravel-widgets/)
-[![Total Downloads]](https://packagist.org/packages/zanysoft/laravel-widgets)
+[Latest Stable Version]
+[Total Downloads]
 
 
 # Widgets for Laravel
