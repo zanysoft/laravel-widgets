@@ -1,6 +1,6 @@
-[Latest Stable Version]
-[Total Downloads]
-[Build Status]
+[![Latest Stable Version]](https://packagist.org/packages/zanysoft/laravel-widgets/)
+[![Total Downloads]](https://packagist.org/packages/zanysoft/laravel-widgets)
+
 
 # Widgets for Laravel
 
