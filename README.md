@@ -1,7 +1,6 @@
-[![Latest Stable Version](https://poser.pugx.org/zanysoft/laravel-widgets/v/stable.svg)](https://packagist.org/packages/zanysoft/laravel-widgets/)
-[![Total Downloads](https://img.shields.io/packagist/dt/zanysoft/laravel-widgets.svg)](https://packagist.org/packages/zanysoft/laravel-widgets)
-[![Build Status](https://img.shields.io/travis/zanysoft/laravel-widgets/master.svg)](https://travis-ci.org/zanysoft/laravel-widgets)
-[![Scrutinizer Quality Score](https://img.shields.io/scrutinizer/g/zanysoft/laravel-widgets/master.svg)](https://scrutinizer-ci.com/g/zanysoft/laravel-widgets/)
+[Latest Stable Version]
+[Total Downloads]
+[Build Status]
 
 # Widgets for Laravel
 
