@@ -6,6 +6,7 @@ use ZanySoft\Widgets\Contracts\ApplicationWrapperContract;
 use Closure;
 use Illuminate\Container\Container;
 
+
 class LaravelApplicationWrapper implements ApplicationWrapperContract
 {
     /**
@@ -59,7 +60,7 @@ class LaravelApplicationWrapper implements ApplicationWrapperContract
      * Get the specified configuration value.
      *
      * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      *
      * @return mixed
      */
@@ -82,12 +83,25 @@ class LaravelApplicationWrapper implements ApplicationWrapperContract
      * Wrapper around app()->make().
      *
      * @param string $abstract
-     * @param array  $parameters
+     * @param array $parameters
      *
      * @return mixed
      */
     public function make($abstract, array $parameters = [])
     {
         return $this->app->make($abstract, $parameters);
+    }
+    /**
+     * Wrapper around app()->get().
+     *
+     * @param string $id
+     *
+     * @throws \Illuminate\Container\EntryNotFoundException
+     *
+     * @return mixed
+     */
+    public function get($id)
+    {
+        return $this->app->get($id);
     }
 }

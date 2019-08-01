@@ -38,8 +38,8 @@ class JavascriptFactory
     public function getLoader($encryptParams = true)
     {
         return
-            '<script type="text/javascript">'.
-                $this->constructAjaxCall($encryptParams).
+            '<script type="text/javascript">' .
+            $this->constructAjaxCall($encryptParams) .
             '</script>';
     }
 
@@ -47,7 +47,7 @@ class JavascriptFactory
      * Construct javascript code to reload the widget.
      *
      * @param float|int $timeout
-     * @param bool      $encryptParams
+     * @param bool $encryptParams
      *
      * @return string
      */
@@ -56,10 +56,10 @@ class JavascriptFactory
         $timeout = $timeout * 1000;
 
         return
-            '<script type="text/javascript">'.
-                'setTimeout( function() {'.
-                    $this->constructAjaxCall($encryptParams).
-                '}, '.$timeout.')'.
+            '<script type="text/javascript">' .
+            'setTimeout( function() {' .
+            $this->constructAjaxCall($encryptParams) .
+            '}, ' . $timeout . ')' .
             '</script>';
     }
 
@@ -70,7 +70,7 @@ class JavascriptFactory
      */
     public function getContainerId()
     {
-        return 'zanysoft-widget-container-'.WidgetId::get();
+        return 'zanysoft-widget-container-' . WidgetId::get();
     }
 
     /**
@@ -94,15 +94,15 @@ class JavascriptFactory
     {
         $encodedParams = json_encode($this->widgetFactory->widgetFullParams);
         $queryParams = [
-            'id'     => WidgetId::get(),
-            'name'   => $this->widgetFactory->widgetName,
+            'id' => WidgetId::get(),
+            'name' => $this->widgetFactory->widgetName,
             'params' => $encryptParams ? $this->widgetFactory->encryptWidgetParams($encodedParams) : $encodedParams,
         ];
         if (!$encryptParams) {
             $queryParams['skip_encryption'] = 1;
         }
 
-        $url = $this->ajaxLink.'?'.http_build_query($queryParams);
+        $url = $this->ajaxLink . '?' . http_build_query($queryParams);
 
         return $this->useJquery()
             ? $this->constructJqueryAjaxCall($url)
@@ -121,11 +121,11 @@ class JavascriptFactory
         $id = WidgetId::get();
 
         return
-            "var widgetTimer{$id} = setInterval(function() {".
-                'if (window.$) {'.
-                    "$('#{$this->getContainerId()}').load('{$url}');".
-                    "clearInterval(widgetTimer{$id});".
-                '}'.
+            "var widgetTimer{$id} = setInterval(function() {" .
+            'if (window.$) {' .
+            "$('#{$this->getContainerId()}').load('{$url}');" .
+            "clearInterval(widgetTimer{$id});" .
+            '}' .
             '}, 100);';
     }
 
@@ -139,24 +139,24 @@ class JavascriptFactory
     protected function constructNativeJsAjaxCall($url)
     {
         return
-            'setTimeout(function() {'.
-                'var xhr = new XMLHttpRequest();'.
-                'xhr.open("GET", "'.$url.'", true);'.
-                'xhr.onreadystatechange = function() {'.
-                    'if(xhr.readyState == 4 && xhr.status == 200) {'.
-                        'var container = document.getElementById("'.$this->getContainerId().'");'.
-                        'container.innerHTML = xhr.responseText;'.
-                        'var scripts = container.getElementsByTagName("script");'.
-                        'for(var i=0; i < scripts.length; i++) {'.
-                            'if (window.execScript) {'.
-                                'window.execScript(scripts[i].text);'.
-                            '} else {'.
-                                'window["eval"].call(window, scripts[i].text);'.
-                            '}'.
-                        '}'.
-                    '}'.
-                '};'.
-                'xhr.send();'.
+            'setTimeout(function() {' .
+            'var xhr = new XMLHttpRequest();' .
+            'xhr.open("GET", "' . $url . '", true);' .
+            'xhr.onreadystatechange = function() {' .
+            'if(xhr.readyState == 4 && xhr.status == 200) {' .
+            'var container = document.getElementById("' . $this->getContainerId() . '");' .
+            'container.innerHTML = xhr.responseText;' .
+            'var scripts = container.getElementsByTagName("script");' .
+            'for(var i=0; i < scripts.length; i++) {' .
+            'if (window.execScript) {' .
+            'window.execScript(scripts[i].text);' .
+            '} else {' .
+            'window["eval"].call(window, scripts[i].text);' .
+            '}' .
+            '}' .
+            '}' .
+            '};' .
+            'xhr.send();' .
             '}, 0);';
     }
 }

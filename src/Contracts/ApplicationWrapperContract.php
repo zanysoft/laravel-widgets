@@ -32,7 +32,7 @@ interface ApplicationWrapperContract
      * Get the specified configuration value.
      *
      * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      *
      * @return mixed
      */
@@ -49,9 +49,18 @@ interface ApplicationWrapperContract
      * Wrapper around app()->make().
      *
      * @param string $abstract
-     * @param array  $parameters
+     * @param array $parameters
      *
      * @return mixed
      */
     public function make($abstract, array $parameters = []);
+
+    /**
+     * Wrapper around app()->get().
+     *
+     * @param string $id
+     *
+     * @return mixed
+     */
+    public function get($id);
 }

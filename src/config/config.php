@@ -8,15 +8,15 @@ return [
     /*
     * Set Ajax widget middleware
     */
-    'route_middleware' => ['web'],
+    'route_middleware' => [],
 
     /*
     * Relative path from the base directory to a regular widget stub.
     */
-    'widget_stub'  => 'vendor/zanysoft/laravel-widgets/src/Console/stubs/widget.stub',
+    'widget_stub' => 'vendor/zanysoft/laravel-widgets/src/Console/stubs/widget.stub',
 
     /*
     * Relative path from the base directory to a plain widget stub.
     */
-    'widget_plain_stub'  => 'vendor/zanysoft/laravel-widgets/src/Console/stubs/widget_plain.stub',
+    'widget_plain_stub' => 'vendor/zanysoft/laravel-widgets/src/Console/stubs/widget_plain.stub',
 ];

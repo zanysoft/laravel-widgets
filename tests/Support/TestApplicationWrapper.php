@@ -6,9 +6,10 @@ use ZanySoft\Widgets\AbstractWidget;
 use ZanySoft\Widgets\Contracts\ApplicationWrapperContract;
 use ZanySoft\Widgets\Factories\AsyncWidgetFactory;
 use ZanySoft\Widgets\Factories\WidgetFactory;
-use Illuminate\Container\Container;
+use ZanySoft\Widgets\NamespacesRepository;
 use Closure;
 use Doctrine\Instantiator\Exception\InvalidArgumentException;
+use Illuminate\Container\Container;
 
 class TestApplicationWrapper implements ApplicationWrapperContract
 {
@@ -18,7 +19,7 @@ class TestApplicationWrapper implements ApplicationWrapperContract
      * @var array
      */
     public $config = [
-        'laravel-widgets.default_namespace'         => 'ZanySoft\Widgets\Test\Dummies',
+        'laravel-widgets.default_namespace' => 'ZanySoft\Widgets\Test\Dummies',
         'laravel-widgets.use_jquery_for_ajax_calls' => true,
     ];
 
@@ -34,7 +35,7 @@ class TestApplicationWrapper implements ApplicationWrapperContract
      */
     public function cache($key, $minutes, $tags, Closure $callback)
     {
-        return 'Cached output. Key: '.$key.', minutes: '.$minutes;
+        return 'Cached output. Key: ' . $key . ', minutes: ' . $minutes;
     }
 
     /**
@@ -54,7 +55,7 @@ class TestApplicationWrapper implements ApplicationWrapperContract
      * Get the specified configuration value.
      *
      * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      *
      * @return mixed
      */
@@ -81,7 +82,7 @@ class TestApplicationWrapper implements ApplicationWrapperContract
      * Wrapper around app()->make().
      *
      * @param string $abstract
-     * @param array  $parameters
+     * @param array $parameters
      *
      * @return mixed
      */
@@ -106,5 +107,19 @@ class TestApplicationWrapper implements ApplicationWrapperContract
         }
 
         throw new InvalidArgumentException("Binding {$abstract} cannot be resolved while testing");
+    }
+
+    /**
+     * Wrapper around app()->get().
+     *
+     * @param string $id
+     *
+     * @return mixed
+     */
+    public function get($id)
+    {
+        if ($id == 'zanysoft.widget-namespaces') {
+            return (new NamespacesRepository())->registerNamespace('dummy', '\ZanySoft\Widgets\Test\Dummies');
+        }
     }
 }

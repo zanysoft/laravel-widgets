@@ -2,11 +2,11 @@
 
 namespace ZanySoft\Widgets;
 
+use Illuminate\Support\Facades\Blade;
 use ZanySoft\Widgets\Console\WidgetMakeCommand;
 use ZanySoft\Widgets\Factories\AsyncWidgetFactory;
 use ZanySoft\Widgets\Factories\WidgetFactory;
 use ZanySoft\Widgets\Misc\LaravelApplicationWrapper;
-use Illuminate\Support\Facades\Blade;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
@@ -18,7 +18,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__.'/config/config.php', 'laravel-widgets'
+            __DIR__ . '/config/config.php', 'laravel-widgets'
         );
 
         $this->app->bind('zanysoft.widget', function () {
@@ -31,6 +31,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
         $this->app->singleton('zanysoft.widget-group-collection', function () {
             return new WidgetGroupCollection(new LaravelApplicationWrapper());
+        });
+
+        $this->app->singleton('zanysoft.widget-namespaces', function () {
+            return new NamespacesRepository();
         });
 
         $this->app->singleton('command.widget.make', function ($app) {
@@ -52,12 +56,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/config/config.php' => config_path('laravel-widgets.php'),
+            __DIR__ . '/config/config.php' => config_path('laravel-widgets.php'),
         ]);
 
         $routeConfig = [
-            'namespace'  => 'ZanySoft\Widgets\Controllers',
-            'prefix'     => 'zanysoft',
+            'namespace' => 'ZanySoft\Widgets\Controllers',
+            'prefix' => 'zanysoft',
             'middleware' => $this->app['config']->get('laravel-widgets.route_middleware', []),
         ];
 
@@ -67,16 +71,24 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             });
         }
 
-        Blade::directive('widget', function ($expression) {
-            return "<?php echo app('zanysoft.widget')->run($expression); ?>";
+        $omitParenthesis = version_compare($this->app->version(), '5.3', '<');
+
+        Blade::directive('widget', function ($expression) use ($omitParenthesis) {
+            $expression = $omitParenthesis ? $expression : "($expression)";
+
+            return "<?php echo app('zanysoft.widget')->run{$expression}; ?>";
         });
 
-        Blade::directive('asyncWidget', function ($expression) {
-            return "<?php echo app('zanysoft.async-widget')->run($expression); ?>";
+        Blade::directive('asyncWidget', function ($expression) use ($omitParenthesis) {
+            $expression = $omitParenthesis ? $expression : "($expression)";
+
+            return "<?php echo app('zanysoft.async-widget')->run{$expression}; ?>";
         });
 
-        Blade::directive('widgetGroup', function ($expression) {
-            return "<?php echo app('zanysoft.widget-group-collection')->group($expression)->display(); ?>";
+        Blade::directive('widgetGroup', function ($expression) use ($omitParenthesis) {
+            $expression = $omitParenthesis ? $expression : "($expression)";
+
+            return "<?php echo app('zanysoft.widget-group-collection')->group{$expression}->display(); ?>";
         });
     }
 

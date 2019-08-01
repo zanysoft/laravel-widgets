@@ -49,7 +49,14 @@ class WidgetGroup
      *
      * @var int
      */
-    protected $nextWidgetId = 1;
+    protected $nextWidgetId = 100;
+
+    /**
+     * Id that is going to be issued to the widget when it's added to the group.
+     *
+     * @var int
+     */
+    protected $widgetId = null;
 
     /**
      * A callback that defines extra markup that wraps every widget in the group.
@@ -69,19 +76,20 @@ class WidgetGroup
         $this->app = $app;
     }
 
-    public function getWidgets() {
+    public function getWidgets()
+    {
         ksort($this->widgets);
 
-        //return $this->widgets;
-
         $output = [];
-        $index  = 0;
-        $count  = $this->count();
+        $index = 0;
+        $count = $this->count();
 
         foreach ($this->widgets as $position => $widgets) {
-            foreach ($widgets as $widget) {
+            foreach ($widgets as $v => $widget) {
+                $widget['group'] = $this->name;
+                $widget['position'] = $position;
                 $widget['html'] = $this->performWrap($this->displayWidget($widget), $index, $count);
-                $output[]       = $widget;
+                $output[] = $widget;
                 //$output[] =
                 /*$index++;
                 if ($index !== $count) {
@@ -117,6 +125,53 @@ class WidgetGroup
         }
 
         return $this->convertToViewExpression($output);
+    }
+
+    /**
+     * Remove all widgets with $name from the group.
+     *
+     * @param string $name
+     */
+    public function hasWidget($name, $position = null)
+    {
+        foreach ($this->widgets as $_position => $widgets) {
+            if ($position && $_position != $position) {
+                continue;
+            }
+            foreach ($widgets as $i => $widget) {
+                if ($widget['arguments'][0] == $name || $widget['name'] == $name) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Remove all widgets with $name from the group.
+     *
+     * @param string $name
+     */
+    public function getWidget($id)
+    {
+        foreach ($this->widgets as $position => $widgets) {
+            foreach ($widgets as $i => $widget) {
+                if ($widget['id'] === $id) {
+                    return $this->widgets[$position][$i];
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Remove all widgets from the group.
+     */
+    public function reset()
+    {
+        $this->widgets = [];
+
+        return $this;
     }
 
     /**
@@ -174,15 +229,31 @@ class WidgetGroup
     }
 
     /**
+     * Set widget id.
+     *
+     * @param int $position
+     *
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->widgetId = $id;
+
+        return $this;
+    }
+
+    /**
      * Set widget position.
      *
      * @param int $position
      *
      * @return $this
      */
-    public function position($position)
+    public function position($position = null)
     {
-        $this->position = $position;
+        if (!is_null($position)) {
+            $this->position = $position;
+        }
 
         return $this;
     }
@@ -280,7 +351,7 @@ class WidgetGroup
      * Add a widget with a given type to the array.
      *
      * @param string $type
-     * @param array  $arguments
+     * @param array $arguments
      *
      * @return int
      */
@@ -290,15 +361,31 @@ class WidgetGroup
             $this->widgets[$this->position] = [];
         }
 
-        $id = $this->nextWidgetId;
-        $this->widgets[$this->position][] = [
-            'id'        => $id,
+        if ($this->widgetId) {
+            $id = $this->widgetId;
+        } else {
+            $id = $this->nextWidgetId;
+        }
+
+        $name = $arguments[0];
+        $config = $arguments[1]??[];
+        $widget = [
+            'id' => $id,
+            'group' => $this->name,
+            'position' => $this->position,
+            'name' => $name,
+            'config' => $config,
             'arguments' => $arguments,
-            'type'      => $type,
+            'type' => $type,
         ];
 
+        $this->widgets[$this->position][] = $widget;
+
         $this->resetPosition();
-        $this->nextWidgetId++;
+
+        if (!$this->widgetId) {
+            $this->nextWidgetId++;
+        }
 
         return $id;
     }
@@ -330,8 +417,8 @@ class WidgetGroup
      * Wraps widget content in a special markup defined by $this->wrap().
      *
      * @param string $content
-     * @param int    $index
-     * @param int    $total
+     * @param int $index
+     * @param int $total
      *
      * @return string
      */

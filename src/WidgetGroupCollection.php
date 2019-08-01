@@ -2,14 +2,13 @@
 
 namespace ZanySoft\Widgets;
 
-use ZanySoft\Widgets\Contracts\ApplicationWrapperContract;
 use Illuminate\Support\Str;
+use ZanySoft\Widgets\Contracts\ApplicationWrapperContract;
 
 class WidgetGroupCollection
 {
     /**
      * The array of widget groups.
-     *
      * @var array
      */
     protected $groups;
@@ -41,7 +40,7 @@ class WidgetGroupCollection
 
         return $this->groups[$name];
     }
-    
+
     /**
      * Get the widget group object.
      *
@@ -49,7 +48,8 @@ class WidgetGroupCollection
      *
      * @return WidgetGroup
      */
-    public function groups($name = '') {
+    public function groups($name = '')
+    {
 
         if (Str::endsWith($name, '*')) {
 

@@ -1,47 +1,54 @@
 {
-    "name": "zanysoft/laravel-widgets",
-    "description": "A powerful alternative to view composers. Asynchronous widgets, reloadable widgets, console generator, caching - everything you can think of.",
-    "license": "MIT",
-    "keywords": ["laravel", "widgets", "block", "module", "html",  "ajax"],
-    "homepage": "http://www.zanysoft.co",
-    "authors": [
-        {
-            "name": "Mubashar Ahmad",
-            "email": "info@zanysoft.co"
-        }
-    ],
-    "homepage": "https://github.com/zanysoft/laravel-widgets",
-    "require": {
-        "php": ">=7.0",
-        "illuminate/support": ">=5.5",
-        "illuminate/contracts": ">=5.5",
-        "illuminate/view": ">=5.5",
-        "illuminate/container": ">=5.5",
-        "illuminate/console": ">=5.5",
-        "illuminate/cache": ">=5.5"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "~6.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "ZanySoft\\Widgets\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "ZanySoft\\Widgets\\Test\\": "tests"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "ZanySoft\\Widgets\\ServiceProvider"
-            ],
-            "aliases": {
-                "Widget": "ZanySoft\\Widgets\\Facade",
-                "AsyncWidget": "ZanySoft\\Widgets\\AsyncFacade"
-            }
-        }
+  "name": "zanysoft/laravel-widgets",
+  "description": "A powerful alternative to view composers. Asynchronous widgets, reloadable widgets, console generator, caching - everything you can think of.",
+  "license": "MIT",
+  "keywords": [
+    "laravel",
+    "widgets",
+    "block",
+    "module",
+    "html",
+    "ajax"
+  ],
+  "homepage": "http://www.zanysoft.co",
+  "authors": [
+    {
+      "name": "Mubashar Ahmad",
+      "email": "info@zanysoft.co"
     }
+  ],
+  "homepage": "https://github.com/zanysoft/laravel-widgets",
+  "require": {
+    "php": ">=7.0",
+    "illuminate/support": ">=5.5",
+    "illuminate/contracts": ">=5.5",
+    "illuminate/view": ">=5.5",
+    "illuminate/container": ">=5.5",
+    "illuminate/console": ">=5.5",
+    "illuminate/cache": ">=5.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~6.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "ZanySoft\\Widgets\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "ZanySoft\\Widgets\\Test\\": "tests"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "ZanySoft\\Widgets\\ServiceProvider"
+      ],
+      "aliases": {
+        "Widget": "ZanySoft\\Widgets\\Facade",
+        "AsyncWidget": "ZanySoft\\Widgets\\AsyncFacade"
+      }
+    }
+  }
 }

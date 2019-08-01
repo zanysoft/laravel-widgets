@@ -20,7 +20,7 @@ class Facade extends \Illuminate\Support\Facades\Facade
     {
         return app('zanysoft.widget-group-collection')->group($name);
     }
-    
+
     /**
      * Get the widget group object.
      *
@@ -28,7 +28,7 @@ class Facade extends \Illuminate\Support\Facades\Facade
      *
      * @return WidgetGroup
      */
-    public static function groups($name='')
+    public static function groups($name = '')
     {
         return app('zanysoft.widget-group-collection')->groups($name);
     }

@@ -11,28 +11,24 @@ class WidgetMakeCommand extends GeneratorCommand
 {
     /**
      * The console command name.
-     *
      * @var string
      */
     protected $name = 'make:widget';
 
     /**
      * The console command description.
-     *
      * @var string
      */
     protected $description = 'Create a new widget (zanysoft/laravel-widgets)';
 
     /**
      * The type of class being generated.
-     *
      * @var string
      */
     protected $type = 'Widget';
 
     /**
      * Execute the console command for Laravel >= 5.5.
-     *
      * @return void
      */
     public function handle()
@@ -51,7 +47,6 @@ class WidgetMakeCommand extends GeneratorCommand
 
     /**
      * Execute the console command for Laravel < 5.5.
-     *
      * @return void
      */
     public function fire()
@@ -85,20 +80,19 @@ class WidgetMakeCommand extends GeneratorCommand
 
     /**
      * Get the stub file for the generator.
-     *
      * @return string
      */
     protected function getStub()
     {
         $stubName = $this->option('plain') ? 'widget_plain' : 'widget';
-        $stubPath = $this->laravel->make('config')->get('laravel-widgets.'.$stubName.'_stub');
+        $stubPath = $this->laravel->make('config')->get('laravel-widgets.' . $stubName . '_stub');
 
         // for BC
-        if (is_null($stubPath)) {
-            return __DIR__.'/stubs/'.$stubName.'.stub';
+        if (is_null($stubPath) || !file_exists($stubPath)) {
+            return __DIR__ . '/stubs/' . $stubName . '.stub';
         }
 
-        return $this->laravel->basePath().'/'.$stubPath;
+        return $this->laravel->basePath() . '/' . $stubPath;
     }
 
     /**
@@ -132,7 +126,7 @@ class WidgetMakeCommand extends GeneratorCommand
      */
     protected function replaceClass($stub, $name)
     {
-        $class = str_replace($this->getNamespace($name).'\\', '', $name);
+        $class = str_replace($this->getNamespace($name) . '\\', '', $name);
 
         return str_replace('{{class}}', $class, $stub);
     }
@@ -146,7 +140,7 @@ class WidgetMakeCommand extends GeneratorCommand
      */
     protected function replaceView($stub)
     {
-        $view = 'widgets.'.str_replace('/', '.', $this->makeViewName());
+        $view = 'widgets.' . str_replace('/', '.', $this->makeViewName());
 
         return str_replace('{{view}}', $view, $stub);
     }
@@ -160,7 +154,7 @@ class WidgetMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        $namespace = config('laravel-widgets.default_namespace', $rootNamespace.'\Widgets');
+        $namespace = config('laravel-widgets.default_namespace', $rootNamespace . '\Widgets');
 
         if (!Str::startsWith($namespace, $rootNamespace)) {
             throw new RuntimeException("You can not use the generator if the default namespace ($namespace) does not start with application namespace ($rootNamespace)");
@@ -171,19 +165,17 @@ class WidgetMakeCommand extends GeneratorCommand
 
     /**
      * Get the console command options.
-     *
      * @return array
      */
     protected function getOptions()
     {
         return [
-            ['plain', null, InputOption::VALUE_NONE, 'Use plain stub. No view is being created too.'],
+            ['plain', NULL, InputOption::VALUE_NONE, 'Use plain stub. No view is being created too.'],
         ];
     }
 
     /**
      * Create a new view file for the widget.
-     *
      * return void
      */
     protected function createView()
@@ -203,17 +195,15 @@ class WidgetMakeCommand extends GeneratorCommand
 
     /**
      * Get the destination view path.
-     *
      * @return string
      */
     protected function getViewPath()
     {
-        return base_path('resources/views').'/widgets/'.$this->makeViewName().'.blade.php';
+        return base_path('resources/views') . '/widgets/' . $this->makeViewName() . '.blade.php';
     }
 
     /**
      * Get the destination view name without extensions.
-     *
      * @return string
      */
     protected function makeViewName()
@@ -224,7 +214,7 @@ class WidgetMakeCommand extends GeneratorCommand
         // convert to snake_case part by part to avoid unexpected underscores.
         $nameArray = explode('/', $name);
         array_walk($nameArray, function (&$part) {
-            $part = snake_case($part);
+            $part = Str::snake($part);
         });
 
         return implode('/', $nameArray);

@@ -1,41 +1,48 @@
+[![Latest Stable Version](https://poser.pugx.org/zanysoft/laravel-widgets/v/stable.svg)](https://packagist.org/packages/zanysoft/laravel-widgets/)
+[![Total Downloads](https://img.shields.io/packagist/dt/zanysoft/laravel-widgets.svg)](https://packagist.org/packages/zanysoft/laravel-widgets)
+[![Build Status](https://img.shields.io/travis/zanysoft/laravel-widgets/master.svg)](https://travis-ci.org/zanysoft/laravel-widgets)
+[![Scrutinizer Quality Score](https://img.shields.io/scrutinizer/g/zanysoft/laravel-widgets/master.svg)](https://scrutinizer-ci.com/g/zanysoft/laravel-widgets/)
+
 # Widgets for Laravel
 
-*A powerful alternative to view composers. Asynchronous widgets, reloadable widgets, console generator, caching - everything you can imagine.*
+*A powerful alternative to view composers. Asynchronous widgets, reloadable widgets, console generator, caching - everything that you can imagine.*
 
 ## Installation
 
-1) Run ```composer require zanysoft/laravel-widgets```
+Run ```composer require zanysoft/laravel-widgets```
 
-2) Register a service provider in the `app.php` configuration file
+Laravel >=5.5 uses Package Auto-Discovery, so you don't need to manually add the ServiceProvider and Facades
+
+For Laravel < 5.5 read on.
+
+1) Register a service provider in the `app.php` configuration file
 
 ```php
 <?php
 
-    'providers' => [
-        ...
-        ZanySoft\Widgets\ServiceProvider::class,
-    ],
-
+'providers' => [
+    ...
+    ZanySoft\Widgets\ServiceProvider::class,
+],
 ?>
 ```
 
-3) Add some facades here too. You can skip this step if you prefer custom blade directives.
+2) Add some facades here too. You can skip this step if you prefer custom blade directives.
 
 ```php
 <?php
 
-    'aliases' => [
-        ...
-        'Widget'       => ZanySoft\Widgets\Facade::class,
-        'AsyncWidget'  => ZanySoft\Widgets\AsyncFacade::class,
-    ],
-
+'aliases' => [
+    ...
+    'Widget'       => ZanySoft\Widgets\Facade::class,
+    'AsyncWidget'  => ZanySoft\Widgets\AsyncFacade::class,
+],
 ?>
 ```
 
 ## Usage
 
-Let's consider we want to make a list of recent news and reuse it in several views.
+Let's consider that we want to make a list of recent news and reuse it in several views.
 
 First of all we can create a Widget class using the artisan command provided by the package.
 ```bash
@@ -83,7 +90,7 @@ class RecentNews extends AbstractWidget
 > Note: You can use your own stubs if you need. Publish config file to change paths.
 
 The last step is to call the widget.
-You've actually got several ways to do so.
+There are several ways to do so.
 
 ```php
 @widget('recentNews')
@@ -97,7 +104,7 @@ or even
 {{ Widget::recentNews() }}
 ```
 
-There is no real difference between them. The choice is up to you.
+There is no real difference between these. The choice is up to you.
 
 ## Passing variables to widget
 
@@ -106,7 +113,7 @@ There is no real difference between them. The choice is up to you.
 Let's carry on with the "recent news" example.
 
 Imagine that we usually need to show *five* news, but in some views we need to show *ten*.
-This can be easily achieved like that:
+This can be easily achieved by:
 
 ```php
 class RecentNews extends AbstractWidget
@@ -149,7 +156,7 @@ In this case do the following:
 
 1) Do not add `protected $config = [...]` line to a child.
 
-2) Add defaults like that instead:
+2) Instead add defaults like this:
 
 ```php
 public function __construct(array $config = [])
@@ -184,7 +191,7 @@ You can override this by publishing package config (```php artisan vendor:publis
 Although using the default namespace is very convenient, in some cases you may wish to have more flexibility. 
 For example, if you've got dozens of widgets it makes sense to group them in namespaced folders.
 
-No problem, you have several ways to call those widgets:
+No problem, there are several ways to call those widgets:
 
 1) Pass a full widget name from the `default_namespace` (basically `App\Widgets`) to the `run` method.
 ```php
@@ -210,7 +217,7 @@ All you need to do is to change facade or blade directive - `Widget::` => `Async
 
 Widget params are encrypted (by default) and sent via ajax call under the hood. So expect them to be `json_encoded()` and `json_decoded()` afterwards.
 
-> Note: You can turn encryption off for a given widget by setting `public $encryptParams = false;` on it. However, this action makes widget params publicly accessible, so please make sure you do not leave any vulnerabilities.
+> Note: You can turn encryption off for a given widget by setting `public $encryptParams = false;` on it. However, this action will make widget params publicly accessible, so please make sure to not leave any vulnerabilities.
 For example, if you pass something like user_id through widget params and turn encryption off, you do need to add one more access check inside the widget.
 
 > Note: You can set `use_jquery_for_ajax_calls` to `true` in the config file to use it for ajax calls if you want to.
@@ -226,13 +233,13 @@ public function placeholder()
 }
 ```
 
-> Side note: If you need to do smth with the routes package uses to load async widgets (e.g. you run app in a subfolder http://site.com/app/) you need to copy ZanySoft\Widgets\ServiceProvider to your app, modify it according to your needs and register it in Laravel instead of the former one.
+> Side note: If you need to do something with the routes package used to load async widgets (e.g. you run app in a subfolder http://site.com/app/) you need to copy ZanySoft\Widgets\ServiceProvider to your app, modify it according to your needs and register it in Laravel instead of the former one.
 
 ## Reloadable widgets
 
 You can go even further and automatically reload widget every N seconds.
 
-Just set the `$reloadTimeout` property of the widget class and you are done.
+Just set the `$reloadTimeout` property of the widget class and it is done.
 
 ```php
 class RecentNews extends AbstractWidget
@@ -403,3 +410,31 @@ Widget::group('sidebar')->removeAll(); // Widget group is empty now
 `Widget::group('sidebar')->any(); // bool`
 
 `Widget::group('sidebar')->count(); // int`
+
+## Namespaces for third party packages (extra)
+
+In some cases, it may be useful to deliver widgets with your own packages. For example, if your package allows 
+you to manage news, it would be convenient to have immediately configurable widgets, ready for display, directly 
+delivered with your package.
+
+To avoid having to use the fqcn each time, you can set a widget namespace into your package provider. This way the 
+widgets from your package can be more easily identified, and especially the syntax will be shorter.
+
+To do that, all you have to do is to register the namespace in your package service provider :
+
+```php
+public function boot() 
+{
+    app('zanysoft.widget-namespaces')->registerNamespace('my-package-name', '\VendorName\PackageName\Path\To\Widgets');
+}
+```
+
+After that you can use the namespace in your views :
+
+```php
+@widget('my-package-name::foo.bar')
+
+// is equivalent to
+@widget('\VendorName\PackageName\Path\To\Widgets\Foo\Bar')
+```
+ 

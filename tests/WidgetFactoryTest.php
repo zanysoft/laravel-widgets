@@ -68,6 +68,20 @@ class WidgetFactoryTest extends TestCase
         $this->assertEquals('Default test slider was executed with $slides = 6', $output);
     }
 
+    public function testItThrowsExceptionForNamespaceNotFound()
+    {
+        $this->expectException('ZanySoft\Widgets\Misc\NamespaceNotFoundException');
+
+        $output = $this->factory->run('notfound::TestDefaultSlider');
+    }
+
+    public function testItCanRunWidgetsUsingNamespace()
+    {
+        $output = $this->factory->run('dummy::TestDefaultSlider');
+
+        $this->assertEquals('Default test slider was executed with $slides = 6', $output);
+    }
+
     public function testItLoadsWidgetsFromRootNamespaceFirst()
     {
         $output = $this->factory->run('Exception');
@@ -109,17 +123,17 @@ class WidgetFactoryTest extends TestCase
         $output = $this->factory->run('testRepeatableFeed');
 
         $this->assertEquals(
-            '<div id="zanysoft-widget-container-1" style="display:inline" class="zanysoft-widget-container">Feed was executed with $slides = 6'.
-                '<script type="text/javascript">'.
-                    'setTimeout( function() {'.
-                        'var widgetTimer1 = setInterval(function() {'.
-                            'if (window.$) {'.
-                                "$('#zanysoft-widget-container-1').load('".$this->ajaxUrl('TestRepeatableFeed')."');".
-                                'clearInterval(widgetTimer1);'.
-                            '}'.
-                        '}, 100);'.
-                    '}, 10000)'.
-                '</script>'.
+            '<div id="zanysoft-widget-container-1" style="display:inline" class="zanysoft-widget-container">Feed was executed with $slides = 6' .
+            '<script type="text/javascript">' .
+            'setTimeout( function() {' .
+            'var widgetTimer1 = setInterval(function() {' .
+            'if (window.$) {' .
+            "$('#zanysoft-widget-container-1').load('" . $this->ajaxUrl('TestRepeatableFeed') . "');" .
+            'clearInterval(widgetTimer1);' .
+            '}' .
+            '}, 100);' .
+            '}, 10000)' .
+            '</script>' .
             '</div>', $output);
     }
 
@@ -128,17 +142,17 @@ class WidgetFactoryTest extends TestCase
         $output = $this->factory->run('testWidgetWithCustomContainer');
 
         $this->assertEquals(
-            '<p id="zanysoft-widget-container-1" data-id="123">Dummy Content'.
-                '<script type="text/javascript">'.
-                    'setTimeout( function() {'.
-                        'var widgetTimer1 = setInterval(function() {'.
-                            'if (window.$) {'.
-                                "$('#zanysoft-widget-container-1').load('".$this->ajaxUrl('TestWidgetWithCustomContainer')."');".
-                                'clearInterval(widgetTimer1);'.
-                            '}'.
-                        '}, 100);'.
-                    '}, 10000)'.
-                '</script>'.
+            '<p id="zanysoft-widget-container-1" data-id="123">Dummy Content' .
+            '<script type="text/javascript">' .
+            'setTimeout( function() {' .
+            'var widgetTimer1 = setInterval(function() {' .
+            'if (window.$) {' .
+            "$('#zanysoft-widget-container-1').load('" . $this->ajaxUrl('TestWidgetWithCustomContainer') . "');" .
+            'clearInterval(widgetTimer1);' .
+            '}' .
+            '}, 100);' .
+            '}, 10000)' .
+            '</script>' .
             '</p>', $output);
     }
 
@@ -146,9 +160,9 @@ class WidgetFactoryTest extends TestCase
     {
         $output = $this->factory->run('testCachedWidget', ['foo' => 'bar']);
 
-        $key = 'zanysoft.widgets.'.serialize(['testCachedWidget', ['foo' => 'bar']]);
+        $key = 'zanysoft.widgets.' . serialize(['testCachedWidget', ['foo' => 'bar']]);
         $widget = new TestCachedWidget();
 
-        $this->assertEquals('Cached output. Key: '.$key.', minutes: '.$widget->cacheTime, $output);
+        $this->assertEquals('Cached output. Key: ' . $key . ', minutes: ' . $widget->cacheTime, $output);
     }
 }

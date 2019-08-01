@@ -8,6 +8,7 @@ use ZanySoft\Widgets\Misc\EncryptException;
 use ZanySoft\Widgets\Misc\InvalidWidgetClassException;
 use ZanySoft\Widgets\Misc\ViewExpressionTrait;
 use ZanySoft\Widgets\WidgetId;
+use Illuminate\Support\Str;
 
 abstract class AbstractWidgetFactory
 {
@@ -67,7 +68,7 @@ abstract class AbstractWidgetFactory
      *
      * @var bool
      */
-    public static $skipWidgetContainer = false;
+    public static $skipWidgetContainer = true;
 
     /**
      * The flag for not wrapping content in a special container.
@@ -92,7 +93,7 @@ abstract class AbstractWidgetFactory
      * Magic method that catches all widget calls.
      *
      * @param string $widgetName
-     * @param array  $params
+     * @param array $params
      *
      * @return mixed
      */
@@ -115,28 +116,37 @@ abstract class AbstractWidgetFactory
     {
         WidgetId::increment();
 
-        $this->widgetName = $this->parseFullWidgetNameFromString(array_shift($params));
+        $str = array_shift($params);
+
+        if (preg_match('#^(.*?)::(.*?)$#', $str, $m)) {
+            $rootNamespace = $this->app->get('zanysoft.widget-namespaces')->getNamespace($m[1]);
+            $str = $m[2];
+        }
+
+        $this->widgetName = $this->parseFullWidgetNameFromString($str);
         $this->widgetFullParams = $params;
-        $this->widgetConfig = (array) array_shift($params);
+        $this->widgetConfig = (array)array_shift($params);
         $this->widgetParams = $params;
 
-        $rootNamespace = $this->app->config('laravel-widgets.default_namespace', $this->app->getNamespace().'Widgets');
+        if (!isset($rootNamespace)) {
+        $rootNamespace = $this->app->config('laravel-widgets.default_namespace', $this->app->getNamespace() . 'Widgets');
+        }
 
-        $fqcn = $rootNamespace.'\\'.$this->widgetName;
+        $fqcn = $rootNamespace . '\\' . $this->widgetName;
         $widgetClass = class_exists($fqcn) ? $fqcn : $this->widgetName;
 
         if (!class_exists($widgetClass)) {
-            throw new InvalidWidgetClassException('Class "'.$widgetClass.'" does not exist');
+            throw new InvalidWidgetClassException('Class "' . $widgetClass . '" does not exist');
         }
 
         if (!is_subclass_of($widgetClass, 'ZanySoft\Widgets\AbstractWidget')) {
-            throw new InvalidWidgetClassException('Class "'.$widgetClass.'" must extend "ZanySoft\Widgets\AbstractWidget" class');
+            throw new InvalidWidgetClassException('Class "' . $widgetClass . '" must extend "ZanySoft\Widgets\AbstractWidget" class');
         }
 
         $this->widget = $this->app->make($widgetClass, ['config' => $this->widgetConfig]);
 
         if (static::$allowOnlyWidgetsWithDisabledEncryption && $this->widget->encryptParams) {
-            throw new EncryptException('Widget "'.$widgetClass.'" was not called properly');
+            throw new EncryptException('Widget "' . $widgetClass . '" was not called properly');
         }
     }
 
@@ -149,7 +159,7 @@ abstract class AbstractWidgetFactory
      */
     protected function parseFullWidgetNameFromString($widgetName)
     {
-        return studly_case(str_replace('.', '\\_', $widgetName));
+        return Str::studly(str_replace('.', '\\_', $widgetName));
     }
 
     /**
@@ -170,7 +180,7 @@ abstract class AbstractWidgetFactory
             $container['element'] = 'div';
         }
 
-        return '<'.$container['element'].' id="'.$this->javascriptFactory->getContainerId().'" '.$container['attributes'].'>'.$content.'</'.$container['element'].'>';
+        return '<' . $container['element'] . ' id="' . $this->javascriptFactory->getContainerId() . '" ' . $container['attributes'] . '>' . $content . '</' . $container['element'] . '>';
     }
 
     /**

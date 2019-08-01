@@ -2,10 +2,10 @@
 
 namespace ZanySoft\Widgets\Controllers;
 
-use ZanySoft\Widgets\Factories\AbstractWidgetFactory;
-use ZanySoft\Widgets\WidgetId;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use ZanySoft\Widgets\Factories\AbstractWidgetFactory;
+use ZanySoft\Widgets\WidgetId;
 
 class WidgetController extends BaseController
 {

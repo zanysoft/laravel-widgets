@@ -74,8 +74,8 @@ abstract class AbstractWidget
     public function container()
     {
         return [
-            'element'       => 'div',
-            'attributes'    => 'style="display:inline" class="zanysoft-widget-container"',
+            'element' => 'div',
+            'attributes' => 'style="display:inline" class="zanysoft-widget-container"',
         ];
     }
 
@@ -88,7 +88,7 @@ abstract class AbstractWidget
      */
     public function cacheKey(array $params = [])
     {
-        return 'zanysoft.widgets.'.serialize($params);
+        return 'zanysoft.widgets.' . serialize($params);
     }
 
     /**
@@ -99,6 +99,16 @@ abstract class AbstractWidget
     public function cacheTags()
     {
         return array_unique(array_merge(['widgets'], $this->cacheTags));
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    public function getWidget()
+    {
+        return $this->config['widget']??null;
     }
 
     /**
