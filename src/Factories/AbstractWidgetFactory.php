@@ -68,7 +68,7 @@ abstract class AbstractWidgetFactory
      *
      * @var bool
      */
-    public static $skipWidgetContainer = true;
+    public static $skipWidgetContainer = false;
 
     /**
      * The flag for not wrapping content in a special container.

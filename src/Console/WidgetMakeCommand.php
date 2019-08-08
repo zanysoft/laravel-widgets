@@ -85,14 +85,9 @@ class WidgetMakeCommand extends GeneratorCommand
     protected function getStub()
     {
         $stubName = $this->option('plain') ? 'widget_plain' : 'widget';
-        $stubPath = $this->laravel->make('config')->get('laravel-widgets.' . $stubName . '_stub');
 
-        // for BC
-        if (is_null($stubPath) || !file_exists($stubPath)) {
-            return __DIR__ . '/stubs/' . $stubName . '.stub';
-        }
+        return __DIR__ . '/stubs/' . $stubName . '.stub';
 
-        return $this->laravel->basePath() . '/' . $stubPath;
     }
 
     /**

@@ -1,7 +1,8 @@
 <?php
 
 return [
-    //'default_namespace' => 'App\Widgets',
+
+    'default_namespace' => 'App\Widgets',
 
     'use_jquery_for_ajax_calls' => false,
 
@@ -9,14 +10,4 @@ return [
     * Set Ajax widget middleware
     */
     'route_middleware' => [],
-
-    /*
-    * Relative path from the base directory to a regular widget stub.
-    */
-    'widget_stub' => 'vendor/zanysoft/laravel-widgets/src/Console/stubs/widget.stub',
-
-    /*
-    * Relative path from the base directory to a plain widget stub.
-    */
-    'widget_plain_stub' => 'vendor/zanysoft/laravel-widgets/src/Console/stubs/widget_plain.stub',
 ];
