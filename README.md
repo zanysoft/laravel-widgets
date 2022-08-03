@@ -13,9 +13,7 @@ Run ```composer require zanysoft/laravel-widgets```
 
 Laravel >=5.5 uses Package Auto-Discovery, so you don't need to manually add the ServiceProvider and Facades
 
-For Laravel < 5.5 read on.
-
-1) Register a service provider in the `app.php` configuration file
+1) Register a service provider in the `app.php` configuration file if not auto-discover
 
 ```php
 <?php
@@ -27,7 +25,7 @@ For Laravel < 5.5 read on.
 ?>
 ```
 
-2) Add some facades here too. You can skip this step if you prefer custom blade directives.
+2) Add some facades here too if not auto-discover.
 
 ```php
 <?php
@@ -437,4 +435,3 @@ After that you can use the namespace in your views :
 // is equivalent to
 @widget('\VendorName\PackageName\Path\To\Widgets\Foo\Bar')
 ```
- 
