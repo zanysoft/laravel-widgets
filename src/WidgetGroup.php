@@ -81,20 +81,26 @@ class WidgetGroup
         ksort($this->widgets);
 
         $output = [];
-        $index = 0;
+        $index = 1;
         $count = $this->count();
 
         foreach ($this->widgets as $position => $widgets) {
             foreach ($widgets as $v => $widget) {
+                $content = $this->displayWidget($widget);
                 $widget['group'] = $this->name;
                 $widget['position'] = $position;
-                $widget['html'] = $this->performWrap($this->displayWidget($widget), $index, $count);
+                if (is_array($content)) {
+                    if (isset($content['data']) && isset($content['html'])) {
+                        $widget['data'] = $content['data'];
+                        $widget['html'] = $content['html'];
+                    } else {
+                        $widget['data'] = $content;
+                    }
+                } else {
+                    $widget['html'] = $this->performWrap($content, $index, $count);
+                }
                 $output[] = $widget;
-                //$output[] =
-                /*$index++;
-                if ($index !== $count) {
-                    $output .= $this->separator;
-                }*/
+                $index++;
             }
         }
 
@@ -111,7 +117,7 @@ class WidgetGroup
         ksort($this->widgets);
 
         $output = '';
-        $index = 0;
+        $index = 1;
         $count = $this->count();
 
         foreach ($this->widgets as $position => $widgets) {
@@ -139,7 +145,7 @@ class WidgetGroup
                 continue;
             }
             foreach ($widgets as $i => $widget) {
-                if ($widget['arguments'][0] == $name || $widget['name'] == $name) {
+                if ($widget['name'] == $name || $widget['name'] == $name) {
                     return true;
                 }
             }
@@ -201,7 +207,7 @@ class WidgetGroup
     {
         foreach ($this->widgets as $position => $widgets) {
             foreach ($widgets as $i => $widget) {
-                if ($widget['arguments'][0] === $name) {
+                if ($widget['name'] === $name) {
                     unset($this->widgets[$position][$i]);
                 }
             }
@@ -361,15 +367,11 @@ class WidgetGroup
             $this->widgets[$this->position] = [];
         }
 
-        if ($this->widgetId) {
-            $id = $this->widgetId;
-        } else {
-            $id = $this->nextWidgetId;
-        }
+        $id = ($this->widgetId ? $this->widgetId : $this->nextWidgetId);
 
         $name = $arguments[0];
-        $config = $arguments[1]??[];
-        $widget = [
+        $config = $arguments[1] ?? [];
+        $this->widgets[$this->position][] = [
             'id' => $id,
             'group' => $this->name,
             'position' => $this->position,
@@ -378,8 +380,6 @@ class WidgetGroup
             'arguments' => $arguments,
             'type' => $type,
         ];
-
-        $this->widgets[$this->position][] = $widget;
 
         $this->resetPosition();
 
@@ -401,7 +401,7 @@ class WidgetGroup
     {
         $factory = $this->app->make($widget['type'] === 'sync' ? 'zanysoft.widget' : 'zanysoft.async-widget');
 
-        return call_user_func_array([$factory, 'run'], $widget['arguments']);
+        return call_user_func_array([$factory, 'run'], [$widget['name'], $widget['config']]);
     }
 
     /**

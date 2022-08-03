@@ -8,6 +8,7 @@ class AsyncFacade extends \Illuminate\Support\Facades\Facade
     {
         return 'zanysoft.async-widget';
     }
+
     /**
      * Get the widget group object.
      *

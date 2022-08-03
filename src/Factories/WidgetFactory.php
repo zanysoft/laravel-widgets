@@ -45,6 +45,18 @@ class WidgetFactory extends AbstractWidgetFactory
     }
 
     /**
+     * @return bool
+     */
+    protected function isAjax(): bool
+    {
+        if (request()->ajax() || request()->wantsJson() || request()->is('api/*')) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Make call and get return widget content.
      *
      * @return mixed
@@ -52,6 +64,15 @@ class WidgetFactory extends AbstractWidgetFactory
     protected function getContent()
     {
         $content = $this->app->call([$this->widget, 'run'], $this->widgetParams);
+
+        if ($this->isAjax()) {
+            $data = $content->getData();
+
+            $data = $data['data'] ?? $data['config'] ?? $data;
+            $html = is_object($content) ? $content->__toString() : $content;
+
+            return ['data' => $data, 'html' => $html];
+        }
 
         return is_object($content) ? $content->__toString() : $content;
     }

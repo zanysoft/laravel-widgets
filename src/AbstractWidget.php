@@ -108,7 +108,7 @@ abstract class AbstractWidget
 
     public function getWidget()
     {
-        return $this->config['widget']??null;
+        return $this->config['widget'] ?? null;
     }
 
     /**

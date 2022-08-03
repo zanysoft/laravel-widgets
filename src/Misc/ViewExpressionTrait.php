@@ -11,11 +11,11 @@ trait ViewExpressionTrait
      *
      * @param string $html
      *
-     * @return \Illuminate\Support\HtmlString|string
+     * @return HtmlString|string
      */
     protected function convertToViewExpression($html)
     {
-        if (interface_exists('Illuminate\Contracts\Support\Htmlable') && class_exists('Illuminate\Support\HtmlString')) {
+        if (is_string($html) && interface_exists('Illuminate\Contracts\Support\Htmlable') && class_exists('Illuminate\Support\HtmlString')) {
             return new HtmlString($html);
         }
 

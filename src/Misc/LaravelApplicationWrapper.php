@@ -2,6 +2,7 @@
 
 namespace ZanySoft\Widgets\Misc;
 
+use Illuminate\Container\EntryNotFoundException;
 use ZanySoft\Widgets\Contracts\ApplicationWrapperContract;
 use Closure;
 use Illuminate\Container\Container;
@@ -91,14 +92,15 @@ class LaravelApplicationWrapper implements ApplicationWrapperContract
     {
         return $this->app->make($abstract, $parameters);
     }
+
     /**
      * Wrapper around app()->get().
      *
      * @param string $id
      *
-     * @throws \Illuminate\Container\EntryNotFoundException
-     *
      * @return mixed
+     * @throws EntryNotFoundException
+     *
      */
     public function get($id)
     {

@@ -129,7 +129,7 @@ abstract class AbstractWidgetFactory
         $this->widgetParams = $params;
 
         if (!isset($rootNamespace)) {
-        $rootNamespace = $this->app->config('laravel-widgets.default_namespace', $this->app->getNamespace() . 'Widgets');
+            $rootNamespace = $this->app->config('laravel-widgets.default_namespace', $this->app->getNamespace() . 'Widgets');
         }
 
         $fqcn = $rootNamespace . '\\' . $this->widgetName;

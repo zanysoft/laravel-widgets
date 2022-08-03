@@ -2,6 +2,7 @@
 
 namespace ZanySoft\Widgets;
 
+use Exception;
 use ZanySoft\Widgets\Misc\NamespaceNotFoundException;
 
 class NamespacesRepository
@@ -33,9 +34,9 @@ class NamespacesRepository
      *
      * @param string $label
      *
-     * @throws \Exception
-     *
      * @return string
+     * @throws Exception
+     *
      */
     public function getNamespace($alias)
     {
